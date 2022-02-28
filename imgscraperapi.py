@@ -1,8 +1,12 @@
 from flask import Flask, render_template
 import wikipedia, requests, json
+from flask_cors import CORS, cross_origin
 
 
 app = Flask(__name__)
+# use cors to allow teammate to access
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 # The below forces the wiki api to render only the main image of the requested page
 WIKI_REQUEST = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles='
 
@@ -21,6 +25,7 @@ def noreq():
 
 # localhost:5000/imageresult/*What you want to search here*/
 @app.route('/imageresult/<imagereq>/', methods=["POST", "GET"])
+@cross_origin()
 def get_wiki_image(imagereq):
     try:
         result = wikipedia.search(imagereq, results = 1)
@@ -30,7 +35,7 @@ def get_wiki_image(imagereq):
         response  = requests.get(WIKI_REQUEST+title)
         json_data = json.loads(response.text)
         img_link = list(json_data['query']['pages'].values())[0]['original']['source']
-        return img_link
+        return  json.dumps(img_link)
         # This returns ONLY the image link. It is possible to return the actual image but it is a bit overkill
         # since you can place the link within your code to reveal the image.
     except:
