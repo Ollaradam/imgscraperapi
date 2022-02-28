@@ -3,7 +3,7 @@ import wikipedia, requests, json
 
 
 app = Flask(__name__)
-# The blow forces the wiki api to render only the main image of the requested page
+# The below forces the wiki api to render only the main image of the requested page
 WIKI_REQUEST = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles='
 
 
